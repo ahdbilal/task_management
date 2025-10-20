@@ -2,17 +2,23 @@
 Task Management API - Main Application
 Demo for Admin-Governed Staging Environment
 """
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 import os
+import time
 
 import crud
 import models
 import schemas
 from database import engine, get_db, init_db
+from logging_config import setup_logging, get_logger
+
+# Setup structured logging
+setup_logging()
+logger = get_logger(__name__)
 
 # Initialize database
 models.Base.metadata.create_all(bind=engine)
@@ -32,10 +38,57 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Request logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Log all HTTP requests with timing and response status"""
+    start_time = time.time()
+    
+    # Log incoming request
+    logger.info(
+        f"Incoming request: {request.method} {request.url.path}",
+        extra={
+            "method": request.method,
+            "endpoint": request.url.path,
+            "client_ip": request.client.host if request.client else "unknown"
+        }
+    )
+    
+    try:
+        response = await call_next(request)
+        duration_ms = (time.time() - start_time) * 1000
+        
+        # Log response
+        logger.info(
+            f"Request completed: {request.method} {request.url.path} - {response.status_code}",
+            extra={
+                "method": request.method,
+                "endpoint": request.url.path,
+                "status_code": response.status_code,
+                "duration_ms": round(duration_ms, 2)
+            }
+        )
+        
+        return response
+    except Exception as e:
+        duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"Request failed: {request.method} {request.url.path} - {str(e)}",
+            extra={
+                "method": request.method,
+                "endpoint": request.url.path,
+                "duration_ms": round(duration_ms, 2)
+            },
+            exc_info=True
+        )
+        raise
+
 @app.on_event("startup")
 async def startup_event():
     """Initialize database on startup"""
+    logger.info("🚀 Starting Task Management API")
     init_db()
+    logger.info("✅ Database initialized")
 
 # API Router
 from fastapi import APIRouter
