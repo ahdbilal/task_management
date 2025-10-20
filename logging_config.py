@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Create logs directory
 LOGS_DIR = Path("/home/azureuser/staging/logs") if Path("/home/azureuser/staging").exists() else Path("./logs")
-LOGS_DIR.mkdir(exist_ok=True)
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 class JSONFormatter(logging.Formatter):
     """Format logs as JSON for easy parsing by log analytics tools"""
