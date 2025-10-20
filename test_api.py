@@ -242,7 +242,7 @@ def test_completed_stats(client):
     client.patch(f"/api/tasks/{task2_resp.json()['id']}", json={"completed": True})
     
     # Get stats
-    response = client.get(f"/stats/completed?user_id={user_id}")
+    response = client.get(f"/api/stats/completed?user_id={user_id}")
     assert response.status_code == 200
     stats = response.json()
     assert stats["completed_tasks"] == 2
