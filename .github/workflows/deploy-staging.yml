@@ -25,12 +25,12 @@ jobs:
     
     - name: Run unit tests
       run: |
-        python -m pytest test_crud.py -v --tb=short
+        python3 -m pytest test_crud.py -v --tb=short
       continue-on-error: false
-    
+
     - name: Run integration tests
       run: |
-        python -m pytest test_api.py -v --tb=short
+        python3 -m pytest test_api.py -v --tb=short
       continue-on-error: false
     
     - name: Test summary
@@ -131,4 +131,5 @@ jobs:
         echo "**Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
         echo "**Status**: ✅ Deployed successfully" >> $GITHUB_STEP_SUMMARY
         echo "**URL**: http://${{ secrets.STAGING_HOST }}:8000" >> $GITHUB_STEP_SUMMARY
+
 
