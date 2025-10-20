@@ -25,12 +25,12 @@ jobs:
     
     - name: Run unit tests
       run: |
-        python3 -m pytest test_crud.py -v --tb=short
+        python3 -m pytest tests/test_crud.py -v --tb=short
       continue-on-error: false
 
     - name: Run integration tests
       run: |
-        python3 -m pytest test_api.py -v --tb=short
+        python3 -m pytest tests/test_api.py -v --tb=short
       continue-on-error: false
     
     - name: Test summary
