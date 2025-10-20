@@ -20,12 +20,14 @@ function App() {
   useEffect(() => {
     loadData();
     checkHealth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Reload tasks when user or filter changes
   useEffect(() => {
     loadTasks();
     loadStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedUser, filter]);
 
   const checkHealth = async () => {
@@ -381,4 +383,5 @@ function App() {
 }
 
 export default App;
+
 
