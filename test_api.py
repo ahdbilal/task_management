@@ -87,13 +87,13 @@ def test_get_user_by_id(client):
     """Test getting user by ID"""
     # Create user
     create_response = client.post(
-        "/users/",
+        "/api/users/",
         json={"email": "getme@test.com", "username": "getme", "password": "pass"}
     )
     user_id = create_response.json()["id"]
     
     # Get user
-    response = client.get(f"/users/{user_id}")
+    response = client.get(f"/api/users/{user_id}")
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == user_id
@@ -109,14 +109,14 @@ def test_create_task_for_user(client):
     """Test creating a task for a user"""
     # Create user
     user_response = client.post(
-        "/users/",
+        "/api/users/",
         json={"email": "taskowner@test.com", "username": "taskowner", "password": "pass"}
     )
     user_id = user_response.json()["id"]
     
     # Create task
     task_response = client.post(
-        f"/users/{user_id}/tasks/",
+        f"/api/users/{user_id}/tasks/",
         json={
             "title": "My First Task",
             "description": "This is a test task",
@@ -134,16 +134,16 @@ def test_get_all_tasks(client):
     """Test getting all tasks"""
     # Create user and tasks
     user_response = client.post(
-        "/users/",
+        "/api/users/",
         json={"email": "multi@test.com", "username": "multi", "password": "pass"}
     )
     user_id = user_response.json()["id"]
     
-    client.post(f"/users/{user_id}/tasks/", json={"title": "Task 1"})
-    client.post(f"/users/{user_id}/tasks/", json={"title": "Task 2"})
+    client.post(f"/api/users/{user_id}/tasks/", json={"title": "Task 1"})
+    client.post(f"/api/users/{user_id}/tasks/", json={"title": "Task 2"})
     
     # Get all tasks
-    response = client.get("/tasks/")
+    response = client.get("/api/tasks/")
     assert response.status_code == 200
     tasks = response.json()
     assert len(tasks) == 2
@@ -152,20 +152,20 @@ def test_update_task(client):
     """Test updating a task"""
     # Create user and task
     user_response = client.post(
-        "/users/",
+        "/api/users/",
         json={"email": "updater@test.com", "username": "updater", "password": "pass"}
     )
     user_id = user_response.json()["id"]
     
     task_response = client.post(
-        f"/users/{user_id}/tasks/",
+        f"/api/users/{user_id}/tasks/",
         json={"title": "Original", "priority": "low"}
     )
     task_id = task_response.json()["id"]
     
     # Update task
     update_response = client.patch(
-        f"/tasks/{task_id}",
+        f"/api/tasks/{task_id}",
         json={"title": "Updated", "completed": True}
     )
     assert update_response.status_code == 200
@@ -178,40 +178,40 @@ def test_delete_task(client):
     """Test deleting a task"""
     # Create user and task
     user_response = client.post(
-        "/users/",
+        "/api/users/",
         json={"email": "deleter@test.com", "username": "deleter", "password": "pass"}
     )
     user_id = user_response.json()["id"]
     
     task_response = client.post(
-        f"/users/{user_id}/tasks/",
+        f"/api/users/{user_id}/tasks/",
         json={"title": "To Delete"}
     )
     task_id = task_response.json()["id"]
     
     # Delete task
-    delete_response = client.delete(f"/tasks/{task_id}")
+    delete_response = client.delete(f"/api/tasks/{task_id}")
     assert delete_response.status_code == 204
     
     # Verify task is gone
-    get_response = client.get(f"/tasks/{task_id}")
+    get_response = client.get(f"/api/tasks/{task_id}")
     assert get_response.status_code == 404
 
 def test_get_tasks_by_priority(client):
     """Test filtering tasks by priority"""
     # Create user and tasks
     user_response = client.post(
-        "/users/",
+        "/api/users/",
         json={"email": "priority@test.com", "username": "priority", "password": "pass"}
     )
     user_id = user_response.json()["id"]
     
-    client.post(f"/users/{user_id}/tasks/", json={"title": "High1", "priority": "high"})
-    client.post(f"/users/{user_id}/tasks/", json={"title": "High2", "priority": "high"})
-    client.post(f"/users/{user_id}/tasks/", json={"title": "Low1", "priority": "low"})
+    client.post(f"/api/users/{user_id}/tasks/", json={"title": "High1", "priority": "high"})
+    client.post(f"/api/users/{user_id}/tasks/", json={"title": "High2", "priority": "high"})
+    client.post(f"/api/users/{user_id}/tasks/", json={"title": "Low1", "priority": "low"})
     
     # Get high priority tasks
-    response = client.get("/tasks/priority/high")
+    response = client.get("/api/tasks/priority/high")
     assert response.status_code == 200
     tasks = response.json()
     assert len(tasks) == 2
@@ -219,7 +219,7 @@ def test_get_tasks_by_priority(client):
 
 def test_get_tasks_invalid_priority(client):
     """Test that invalid priority returns error"""
-    response = client.get("/tasks/priority/invalid")
+    response = client.get("/api/tasks/priority/invalid")
     assert response.status_code == 400
     assert "Invalid priority" in response.json()["detail"]
 
@@ -227,19 +227,19 @@ def test_completed_stats(client):
     """Test completed tasks statistics"""
     # Create user and tasks
     user_response = client.post(
-        "/users/",
+        "/api/users/",
         json={"email": "stats@test.com", "username": "stats", "password": "pass"}
     )
     user_id = user_response.json()["id"]
     
     # Create tasks
-    task1_resp = client.post(f"/users/{user_id}/tasks/", json={"title": "Task1"})
-    task2_resp = client.post(f"/users/{user_id}/tasks/", json={"title": "Task2"})
-    task3_resp = client.post(f"/users/{user_id}/tasks/", json={"title": "Task3"})
+    task1_resp = client.post(f"/api/users/{user_id}/tasks/", json={"title": "Task1"})
+    task2_resp = client.post(f"/api/users/{user_id}/tasks/", json={"title": "Task2"})
+    task3_resp = client.post(f"/api/users/{user_id}/tasks/", json={"title": "Task3"})
     
     # Complete some tasks
-    client.patch(f"/tasks/{task1_resp.json()['id']}", json={"completed": True})
-    client.patch(f"/tasks/{task2_resp.json()['id']}", json={"completed": True})
+    client.patch(f"/api/tasks/{task1_resp.json()['id']}", json={"completed": True})
+    client.patch(f"/api/tasks/{task2_resp.json()['id']}", json={"completed": True})
     
     # Get stats
     response = client.get(f"/stats/completed?user_id={user_id}")
