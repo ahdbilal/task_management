@@ -1,0 +1,4 @@
+# Requirements for Log Analytics MCP Server only
+# Install on remote server separately from main app
+mcp>=0.9.0
+
