@@ -32,14 +32,14 @@ def client():
 
 def test_health_check(client):
     """Test health check endpoint"""
-    response = client.get("/health")
+    response = client.get("/api/health")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy", "environment": "staging"}
 
 def test_create_user_success(client):
     """Test successful user creation"""
     response = client.post(
-        "/users/",
+        "/api/users/",
         json={
             "email": "newuser@example.com",
             "username": "newuser",
@@ -62,23 +62,23 @@ def test_create_user_duplicate_email(client):
     }
     
     # Create first user
-    response1 = client.post("/users/", json=user_data)
+    response1 = client.post("/api/users/", json=user_data)
     assert response1.status_code == 201
     
     # Try to create user with same email
     user_data["username"] = "user2"
-    response2 = client.post("/users/", json=user_data)
+    response2 = client.post("/api/users/", json=user_data)
     assert response2.status_code == 400
     assert "Email already registered" in response2.json()["detail"]
 
 def test_get_users(client):
     """Test getting list of users"""
     # Create some users
-    client.post("/users/", json={"email": "user1@test.com", "username": "user1", "password": "pass"})
-    client.post("/users/", json={"email": "user2@test.com", "username": "user2", "password": "pass"})
+    client.post("/api/users/", json={"email": "user1@test.com", "username": "user1", "password": "pass"})
+    client.post("/api/users/", json={"email": "user2@test.com", "username": "user2", "password": "pass"})
     
     # Get users
-    response = client.get("/users/")
+    response = client.get("/api/users/")
     assert response.status_code == 200
     users = response.json()
     assert len(users) == 2
@@ -102,7 +102,7 @@ def test_get_user_by_id(client):
 
 def test_get_nonexistent_user(client):
     """Test getting user that doesn't exist"""
-    response = client.get("/users/9999")
+    response = client.get("/api/users/9999")
     assert response.status_code == 404
 
 def test_create_task_for_user(client):
@@ -247,4 +247,5 @@ def test_completed_stats(client):
     stats = response.json()
     assert stats["completed_tasks"] == 2
     assert stats["user_id"] == user_id
+
 
