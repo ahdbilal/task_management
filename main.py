@@ -23,6 +23,11 @@ logger = get_logger(__name__)
 # Initialize database
 models.Base.metadata.create_all(bind=engine)
 
+# FastAPI application setup
+# Creates the main FastAPI instance with OpenAPI documentation metadata.
+# The app serves as the central entry point for the Task Management API,
+# with automatic interactive docs at /docs (Swagger UI) and /redoc (ReDoc).
+# Middleware, routers, and static files are registered with this app instance.
 app = FastAPI(
     title="Task Management API",
     description="Demo API for Staging Environment with Governance",
