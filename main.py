@@ -27,7 +27,13 @@ models.Base.metadata.create_all(bind=engine)
 # Creates the main FastAPI instance with OpenAPI documentation metadata.
 # The app serves as the central entry point for the Task Management API,
 # with automatic interactive docs at /docs (Swagger UI) and /redoc (ReDoc).
-# Middleware, routers, and static files are registered with this app instance.
+# Configuration includes:
+# - Title, description, and version for API documentation
+# - CORS middleware for cross-origin requests (configured for all origins in staging)
+# - Request logging middleware for monitoring HTTP traffic with timing metrics
+# - API router mounted at /api prefix for all endpoints
+# - Static file serving for React frontend build (when available)
+# - Database session management via dependency injection
 app = FastAPI(
     title="Task Management API",
     description="Demo API for Staging Environment with Governance",
