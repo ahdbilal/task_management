@@ -13,20 +13,18 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
       
-      - name: Deploy to Staging Server
+      - name: Pull Latest Code
         env:
           STAGING_HOST: ${{ secrets.STAGING_HOST }}
           STAGING_USER: ${{ secrets.STAGING_USER }}
           STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
         run: |
-          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $STAGING_USER@$STAGING_HOST bash -c "'
-            set -e
-            cd /home/ahmedbilal/workspace
-            git pull origin main
-            pkill -f \"python.*main.py\" || true
-            sleep 2
-            nohup python3 main.py > app.log 2>&1 &
-            sleep 1
-            echo \"✅ Deployment complete at \$(date)\"
-            exit 0
-          '"
+          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $STAGING_USER@$STAGING_HOST "cd /home/ahmedbilal/workspace && git pull origin main"
+      
+      - name: Restart Application
+        env:
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
+          STAGING_USER: ${{ secrets.STAGING_USER }}
+          STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+        run: |
+          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $STAGING_USER@$STAGING_HOST "cd /home/ahmedbilal/workspace; pkill -f 'python.*main.py' || true; sleep 2; nohup python3 main.py > app.log 2>&1 & echo 'Deployment complete'"
