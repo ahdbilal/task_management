@@ -1,0 +1,32 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+      
+      - name: Deploy to Staging Server
+        env:
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
+          STAGING_USER: ${{ secrets.STAGING_USER }}
+          STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+        run: |
+          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $STAGING_USER@$STAGING_HOST << 'ENDSSH'
+            cd /home/ahmedbilal/workspace
+            git pull origin main
+            
+            # Restart the application
+            pkill -f "python.*main.py" || true
+            sleep 2
+            nohup python3 main.py > app.log 2>&1 &
+            
+            echo "✅ Deployment complete at $(date)"
+ENDSSH
