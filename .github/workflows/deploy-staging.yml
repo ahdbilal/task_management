@@ -19,4 +19,14 @@ jobs:
           STAGING_USER: ${{ secrets.STAGING_USER }}
           STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
         run: |
-          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -T $STAGING_USER@$STAGING_HOST 'cd /home/ahmedbilal/workspace && git pull origin main && (pkill -f "python.*main.py" || true) && sleep 2 && nohup python3 main.py > app.log 2>&1 & sleep 1 && echo "Deployment complete"'
+          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $STAGING_USER@$STAGING_HOST bash -c "'
+            set -e
+            cd /home/ahmedbilal/workspace
+            git pull origin main
+            pkill -f \"python.*main.py\" || true
+            sleep 2
+            nohup python3 main.py > app.log 2>&1 &
+            sleep 1
+            echo \"✅ Deployment complete at \$(date)\"
+            exit 0
+          '"
