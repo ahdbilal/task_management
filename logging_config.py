@@ -4,9 +4,15 @@ import logging.handlers
 import sys
 from datetime import datetime
 
-# Configure logging directory (use workspace logs)
-LOGS_DIR = Path("/home/ahmedbilal/workspace/logs")
-LOGS_DIR.mkdir(parents=True, exist_ok=True)
+# Configure logging directory - works in CI and local environments
+try:
+    LOGS_DIR = Path(__file__).parent / "logs"
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+except (PermissionError, OSError):
+    # Fallback to temp directory if we can't create logs in current dir
+    import tempfile
+    LOGS_DIR = Path(tempfile.gettempdir()) / "task_management_logs"
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # Rest of logging config
