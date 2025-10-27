@@ -11,7 +11,8 @@ npm run build
 
 echo "🔄 Restarting backend..."
 cd /home/ahmedbilal/workspace
-pkill -f 'python.*main.py' || true
+echo "   Killing processes on port 8000..."
+fuser -k 8000/tcp || true
 sleep 2
 nohup python3 main.py > app.log 2>&1 &
 
