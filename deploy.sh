@@ -5,6 +5,9 @@ DEPLOY_DIR="/home/ahmedbilal/staging"
 
 cd $DEPLOY_DIR
 
+echo "📥 Pulling latest code from main..."
+git pull origin main
+
 echo "🛑 Killing any processes on port 8000..."
 echo 'claudeSONNET45' | sudo -S fuser -k -9 8000/tcp 2>/dev/null || true
 echo 'claudeSONNET45' | sudo -S pkill -9 -f 'uvicorn.*8000' 2>/dev/null || true
