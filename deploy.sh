@@ -1,16 +1,21 @@
 #!/bin/bash
-# Auto-deployment script for staging environment
+set -e  # Exit on any error
 
-cd ~/workspace
+cd /home/ahmedbilal/workspace
 
-# Kill old process
+echo "📦 Installing frontend dependencies..."
+cd frontend && npm install --silent
+
+echo "🔨 Building React frontend..."
+npm run build
+
+echo "🔄 Restarting backend..."
+cd /home/ahmedbilal/workspace
 pkill -f 'python.*main.py' || true
-
-# Wait for clean shutdown
 sleep 2
-
-# Start new process
 nohup python3 main.py > app.log 2>&1 &
 
-echo "✅ Application restarted at $(date)"
+echo "✅ Deployment complete at $(date)"
+echo "   Frontend: Built ✓"
+echo "   Backend: Restarted ✓"
 
