@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import * as api from './api';
+import { useTheme } from './context/ThemeContext';
 
 function App() {
+  const { theme, toggleTheme } = useTheme();
   const [users, setUsers] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -153,6 +155,9 @@ function App() {
             <h1>📝 Task Management Dashboard</h1>
           </div>
           <div className="health-status">
+            <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
             {healthStatus && (
               <span className={`health-badge ${healthStatus.status === 'healthy' ? 'healthy' : 'error'}`}>
                 {healthStatus.status === 'healthy' ? '✓' : '✗'} {healthStatus.environment}
