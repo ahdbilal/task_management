@@ -4,10 +4,14 @@ import logging.handlers
 import sys
 from datetime import datetime
 
-# Configure logging directory (use workspace logs)
-LOGS_DIR = Path("/home/ahmedbilal/workspace/logs")
-LOGS_DIR.mkdir(parents=True, exist_ok=True)
-
+# Try production path first, fall back to relative path for CI/tests
+try:
+    LOGS_DIR = Path('/home/ahmedbilal/workspace/logs')
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+except (PermissionError, FileNotFoundError):
+    # CI environment or test - use relative path
+    LOGS_DIR = Path('./logs')
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Rest of logging config
 logging.basicConfig(
@@ -28,3 +32,4 @@ def setup_logging():
 
 def get_logger(name):
     return logging.getLogger(name)
+
