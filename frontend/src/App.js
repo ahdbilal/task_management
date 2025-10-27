@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import * as api from './api';
+import { useTheme } from './contexts/ThemeContext';
 
 function App() {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [users, setUsers] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -152,12 +154,21 @@ function App() {
           <div>
             <h1>📝 Task Management Dashboard</h1>
           </div>
-          <div className="health-status">
-            {healthStatus && (
-              <span className={`health-badge ${healthStatus.status === 'healthy' ? 'healthy' : 'error'}`}>
-                {healthStatus.status === 'healthy' ? '✓' : '✗'} {healthStatus.environment}
-              </span>
-            )}
+          <div className="header-right">
+            <button
+              className="theme-toggle-btn"
+              onClick={toggleTheme}
+              title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDarkMode ? '☀️' : '🌙'}
+            </button>
+            <div className="health-status">
+              {healthStatus && (
+                <span className={`health-badge ${healthStatus.status === 'healthy' ? 'healthy' : 'error'}`}>
+                  {healthStatus.status === 'healthy' ? '✓' : '✗'} {healthStatus.environment}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </header>

@@ -389,3 +389,104 @@
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
+
+/* Dark Mode Styles for Task Tiles */
+body.dark-mode .task-tile {
+  background: #2d2d2d;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3),
+              0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .task-tile:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5),
+              0 4px 6px -2px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .task-tile-card.completed {
+  background: linear-gradient(135deg, #1f3a2f 0%, #2d2d2d 100%);
+}
+
+body.dark-mode .task-tile-card.overdue {
+  border-color: #3d1f1f;
+  background: linear-gradient(135deg, #3d1f1f 0%, #2d2d2d 100%);
+}
+
+body.dark-mode .task-tile-compact {
+  background: #2d2d2d;
+}
+
+body.dark-mode .task-tile-compact.completed {
+  background: #2a3833;
+}
+
+body.dark-mode .task-tile-compact.overdue {
+  background: #3d1f1f;
+}
+
+body.dark-mode .task-tile-title {
+  color: #e5e7eb;
+}
+
+body.dark-mode .task-tile.completed .task-tile-title {
+  color: #9ca3af;
+}
+
+body.dark-mode .task-tile-description p {
+  color: #9ca3af;
+}
+
+body.dark-mode .task-checkbox {
+  background: #3d3d3d;
+  border-color: #4d4d4d;
+}
+
+body.dark-mode .task-checkbox:hover {
+  border-color: #3b82f6;
+  background: #1e3a5f;
+}
+
+body.dark-mode .task-meta-item {
+  color: #9ca3af;
+}
+
+body.dark-mode .task-due-date {
+  color: #9ca3af;
+}
+
+body.dark-mode .task-completed-badge {
+  background: #1f4037;
+  color: #6ee7b7;
+}
+
+body.dark-mode .task-overdue-indicator {
+  background: #3d1f1f;
+  color: #ef4444;
+}
+
+body.dark-mode .task-action-btn {
+  background: #3d3d3d;
+  color: #9ca3af;
+}
+
+body.dark-mode .task-action-btn:hover {
+  background: #4d4d4d;
+  color: #e5e7eb;
+}
+
+body.dark-mode .task-action-btn.edit:hover {
+  background: #1e3a5f;
+  color: #60a5fa;
+}
+
+body.dark-mode .task-action-btn.delete:hover {
+  background: #3d1f1f;
+  color: #ef4444;
+}
+
+body.dark-mode .task-expand-btn {
+  color: #60a5fa;
+}
+
+body.dark-mode .task-expand-btn:hover {
+  color: #93c5fd;
+}
