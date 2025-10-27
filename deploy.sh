@@ -1,32 +1,30 @@
 #!/bin/bash
-set -e
+set -e  # Exit on any error
 
-cd /home/ahmedbilal/workspace
+DEPLOY_DIR="/home/ahmedbilal/staging"
+
+cd $DEPLOY_DIR
+
+echo "🛑 Killing any processes on port 8000..."
+echo 'claudeSONNET45' | sudo -S fuser -k -9 8000/tcp 2>/dev/null || true
+echo 'claudeSONNET45' | sudo -S pkill -9 -f 'uvicorn.*8000' 2>/dev/null || true
+sleep 3
 
 echo "📦 Installing frontend dependencies..."
-cd frontend && npm install --silent
+cd $DEPLOY_DIR/frontend && npm install --silent
 
 echo "🔨 Building React frontend..."
 npm run build
 
-echo "🔄 Restarting backend..."
-cd /home/ahmedbilal/workspace
-
-# Install/update Python dependencies
+echo "📦 Installing Python dependencies..."
+cd $DEPLOY_DIR
 pip3 install -r requirements.txt --break-system-packages --quiet || true
 
-# Kill ALL processes on port 8000 using sudo (works for all users)
-echo "🛑 Killing old processes on port 8000..."
-echo 'claudeSONNET45' | sudo -S fuser -k -9 8000/tcp 2>/dev/null || true
-echo 'claudeSONNET45' | sudo -S pkill -9 -f 'uvicorn.*8000' 2>/dev/null || true
-
-sleep 5
-
-# Start new backend
-echo "🚀 Starting new backend..."
+echo "🚀 Starting backend from $DEPLOY_DIR..."
+cd $DEPLOY_DIR
 nohup python3 main.py > app.log 2>&1 &
 
-sleep 3
+sleep 2
 
 echo "✅ Deployment complete at $(date)"
-
+echo "   Server running from: $DEPLOY_DIR"
