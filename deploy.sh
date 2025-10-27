@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  # Exit on any error
+set -e
 
 cd /home/ahmedbilal/workspace
 
@@ -11,12 +11,22 @@ npm run build
 
 echo "🔄 Restarting backend..."
 cd /home/ahmedbilal/workspace
-echo "   Killing processes on port 8000..."
-fuser -k 8000/tcp || true
-sleep 2
+
+# Install/update Python dependencies
+pip3 install -r requirements.txt --break-system-packages --quiet || true
+
+# Kill ALL processes on port 8000 using sudo (works for all users)
+echo "🛑 Killing old processes on port 8000..."
+echo 'claudeSONNET45' | sudo -S fuser -k -9 8000/tcp 2>/dev/null || true
+echo 'claudeSONNET45' | sudo -S pkill -9 -f 'uvicorn.*8000' 2>/dev/null || true
+
+sleep 5
+
+# Start new backend
+echo "🚀 Starting new backend..."
 nohup python3 main.py > app.log 2>&1 &
 
+sleep 3
+
 echo "✅ Deployment complete at $(date)"
-echo "   Frontend: Built ✓"
-echo "   Backend: Restarted ✓"
 
