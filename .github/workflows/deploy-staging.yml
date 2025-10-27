@@ -13,18 +13,11 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
       
-      - name: Pull Latest Code
+      - name: Deploy to Staging
         env:
           STAGING_HOST: ${{ secrets.STAGING_HOST }}
           STAGING_USER: ${{ secrets.STAGING_USER }}
           STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
         run: |
-          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $STAGING_USER@$STAGING_HOST "cd /home/ahmedbilal/workspace && git pull origin main"
-      
-      - name: Build Frontend & Restart
-        env:
-          STAGING_HOST: ${{ secrets.STAGING_HOST }}
-          STAGING_USER: ${{ secrets.STAGING_USER }}
-          STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
-        run: |
-          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $STAGING_USER@$STAGING_HOST "bash /home/ahmedbilal/workspace/deploy.sh"
+          sshpass -p "$STAGING_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $STAGING_USER@$STAGING_HOST "bash /home/ahmedbilal/staging/deploy.sh"
+
